@@ -7,5 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "basicauth-middleware": "^2.0.0",
+    "ejs": "^2.5.6",
+    "express": "^4.14.1",
+    "express-mailer": "^0.3.1",
+    "html-pdf": "^2.1.0",
+    "mongodb": "^2.2.24",
+    "qr-image": "^3.2.0"
+  }
 }
