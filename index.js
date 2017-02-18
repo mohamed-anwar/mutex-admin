@@ -1,7 +1,10 @@
 var express = require('express');
 var auth = require('basicauth-middleware');
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var mailer = require('express-mailer');
+global.io = io;
 
 global.app = app;
 
@@ -25,6 +28,6 @@ app.set('views', __dirname + '/views');
 require('./controllers/routes')(app);
 
 port = process.env.PORT || 3000;
-app.listen(port, function() {
+http.listen(port, function() {
   console.log('Started listening on port ' + port);
 });

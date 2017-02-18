@@ -28,7 +28,7 @@ exports.getDoc = function(id, callback) {
   });
 };
 
-exports.decline = function(id, callback) {
+exports.accept = function(id, value, callback) {
   MongoClient.connect(mongoURI, function(err, db) {
     if (err) {
       callback(err, db);
@@ -37,7 +37,7 @@ exports.decline = function(id, callback) {
         if (err) {
           callback(err, db);
         } else {
-          db.collection(collection).update({'_id': new ObjectId(id)}, {$set: {accepted: false}}, function(err, count) {
+          db.collection(collection).update({'_id': new ObjectId(id)}, {$set: {accepted: value}}, function(err, count) {
             if (err) {
               callback(err, db);
             } else {

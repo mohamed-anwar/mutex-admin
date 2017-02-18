@@ -16,6 +16,9 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
 
+		<!-- Toastr -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -60,6 +63,26 @@
     <script type="text/javascript" src="/assets/js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
     <script type="text/javascript" src="/assets/js/bootstrap-table.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+		<script type="text/javascript">
+			toastr.options.timeOut = 30;
+			toastr.options.positionClass = "toast-bottom-right";
+		</script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		  var socket = io();
+			socket.on('error', function(id) {
+				toastr.error('Error: ' + id);
+			});
+			socket.on('success', function(req) {
+				toastr.info('Success: ' + req.id);
+				var $table = $('#fresh-table');
+				$table.bootstrapTable('remove', {
+						field: 'id',
+						values: [req.id]
+				});
+			});
+		</script>
 
     <script type="text/javascript">
         var $table = $('#fresh-table'),
@@ -103,20 +126,11 @@
             });
 
             window.operateEvents = {
-                /*'click .like': function (e, value, row, index) {
-                    alert('You click like icon, id: ' + row.id);
-                    console.log(value, row, index);
+                'click .like': function (e, value, row, index) {
+									socket.emit('accept', {id: row.id, value: true});
                 },
-                'click .edit': function (e, value, row, index) {
-                    alert('You click edit icon, row: ' + JSON.stringify(row));
-                    console.log(value, row, index);
-                }, */
                 'click .remove': function (e, value, row, index) {
-                    $table.bootstrapTable('remove', {
-                        field: 'id',
-                        values: [row.id]
-                    });
-
+									socket.emit('accept', {id: row.id, value: false});
                 }
             };
 
@@ -133,13 +147,10 @@
 
         function operateFormatter(value, row, index) {
             return [
-                '<a rel="tooltip" title="Like" class="table-action like" href="javascript:void(0)" title="Like">',
-                    '<i class="fa fa-heart"></i>',
+                '<a rel="tooltip" title="Accept" class="table-action like" href="javascript:void(0)">',
+                    '<i class="fa fa-check"></i>',
                 '</a>',
-                '<a rel="tooltip" title="Edit" class="table-action edit" href="javascript:void(0)" title="Edit">',
-                    '<i class="fa fa-edit"></i>',
-                '</a>',
-                '<a rel="tooltip" title="Remove" class="table-action remove" href="javascript:void(0)" title="Remove">',
+                '<a rel="tooltip" title="Decline" class="table-action remove" href="javascript:void(0)">',
                     '<i class="fa fa-remove"></i>',
                 '</a>'
             ].join('');
