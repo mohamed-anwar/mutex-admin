@@ -22,7 +22,7 @@ io.on('connection', function(socket) {
 
 router.get('/', function(req, res) {
   database.getList(function(err, db, list) {
-    list = list.filter(x => x.confirmed == true).filter(x => x.accepted == undefined);
+    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == undefined);
     res.render('index', {
       list: list,
     });
