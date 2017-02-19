@@ -17,12 +17,15 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
+  <!-- ICONS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="file:///home/manwar/tmp/mutex-accept/public/assets/css/normalize.css">
   <link rel="stylesheet" href="file:///home/manwar/tmp/mutex-accept/public/assets/css/skeleton.css">
 </head>
-<body style="background-image: url('file:///home/manwar/tmp/mutex-accept/public/assets/imgs/bg.png'); background-size: cover;">
+<body>
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -32,30 +35,64 @@
         <div class="twelve columns" style="margin-top: 10%">
           <img style="width: 500px; height: auto;" src="file:///home/manwar/tmp/mutex-accept/public/assets/imgs/mutex.png"/>
           <h4>You are invited</h4>
-          <h2 style="text-transform: uppercase; color: white;"><%=fullname%></h2>
+          <h2 style="text-transform: uppercase;"><%=fullname%></h2>
           <h5 style="text-transform: lowercase"><%=email%></h5>
-          <div style="width: 150px;">
-            <%-qr%>
-          </div>
         </div>
+      </center>
+    </div>
+
+    <div class="row" style="margin-top: 3%">
+      <center>
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Invitation Code</th>
+              <th style="text-align: center;">Event Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 50%; border-right: 1px solid #e1e1e1;"><div style="width: auto; height: 150px;"><%-qr%></div></td>
+              <td style="width: 50%;">
+                <table style="padding: auto; margin-left: 25%; margin-top: 7%; width: 60%;">
+                  <tr>
+                    <td style="border-bottom-width: 0px; font-size: 20px;"><i class="fa fa-map-marker"></i></td>
+                    <td style="border-bottom-width: 0px;"> Zagazig University</td>
+                  </tr>
+                  <tr>
+                    <td style="border-bottom-width: 0px; font-size: 20px;"><i class="fa fa-calendar"></td>
+                    <td style="border-bottom-width: 0px;"></i> 25 February, 2017</td>
+                  </tr>
+                  <tr>
+                    <td style="border-bottom-width: 0px; font-size: 20px;"><i class="fa fa-clock-o"></td>
+                    <td style="border-bottom-width: 0px;"></i> 10 A.M.</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </center>
+    </div>
+
+    <div class="row" style="margin-top: 10%">
+      <center>
+        <table style="height: 200px;">
+          <tbody>
+            <tr>
+              <td style="width=50%;">
+                  <img style="height: 90px; widht: auto;" src="file:///home/manwar/tmp/mutex-accept/public/assets/imgs/ieee.png"/>
+              </td>
+              <td style="width: 50%;">
+                  <img style="height: 90px; width: auto; " src="file:///home/manwar/tmp/mutex-accept/public/assets/imgs/cs.png"/>
+              </td>
+          </tbody>
+        </table>
       </center>
     </div>
 
     <div class="row">
-      <center>
-        <div class="twelve columns" style="margin-top: 3%">
-          <h3>Zagazig University</h3>
-          <h2>H1 Hall, be there at 11:00 EET</h2>
-        </div>
-      </center>
-    </div>
-
-    <div class="row" style="margin-top: 5%">
-      <center>
-        <div class="six columns">
-          <img style="width: auto; height: 150px;" src="file:///home/manwar/tmp/mutex-accept/public/assets/imgs/ieee.png"/>
-        </div>
-      </center>
+      <p style="float: right; bottom: 0;"><%=code%></p>
     </div>
   </div>
 <!-- End Document

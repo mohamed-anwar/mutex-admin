@@ -52,32 +52,38 @@ router.get('/declined', function(req, res) {
 
 router.get('/invitation', function(req, res) {
   var id = req.query.id;
-  database.getDoc(id, function(err, db, doc) {
-    if (err) {
 
-    } else {
-      ejs.renderFile(__dirname + '/../views/invitation.ejs', {
-        qr: qr.imageSync(id, {type: 'svg'}),
-        fullname: doc.fullname,
-        email: doc.email,
-      }, function(err, str) {
-        pdf.create(str, {
-          format: 'A4',
-          height: "42cm",
-          width: "29.7cm"
-        }).toStream(function(err, buffer) {
-          /*app.mailer.send('mail', {
-            to: doc.email,
-            subject: 'Mutex event invitation',
-            attachments: [{filename: "invitation.pdf", contents: buffer}]
-          }, function(err, message) {
-            res.send('Sent');
-          });*/
-          buffer.pipe(res);
+  if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(404).send('ERR::INV_ID');
+  } else {
+    database.getDoc(id, function(err, db, doc) {
+      if (err) {
+        res.status(404).send('ERR::DB');
+      } else {
+        ejs.renderFile(__dirname + '/../views/invitation.ejs', {
+          code: id,
+          qr: qr.imageSync(id, {type: 'svg'}),
+          fullname: doc.fullname,
+          email: doc.email,
+        }, function(err, str) {
+          pdf.create(str, {
+            format: 'A4',
+            height: "42cm",
+            width: "29.7cm"
+          }).toStream(function(err, buffer) {
+            /*app.mailer.send('mail', {
+              to: doc.email,
+              subject: 'Mutex event invitation',
+              attachments: [{filename: "invitation.pdf", contents: buffer}]
+            }, function(err, message) {
+              res.send('Sent');
+            });*/
+            buffer.pipe(res);
+          })
         });
-      });
-    }
-  });
+      }
+    });
+  }
 });
 
 module.exports = router;
