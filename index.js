@@ -5,6 +5,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mailer = require('express-mailer');
 global.io = io;
+global.pwd = __dirname;
 
 global.app = app;
 

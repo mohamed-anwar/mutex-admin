@@ -28,6 +28,30 @@ exports.getDoc = function(id, callback) {
   });
 };
 
+exports.updateDoc = function(id, field, value, callback) {
+  MongoClient.connect(mongoURI, function(err, db) {
+    if (err) {
+      callback(err, db);
+    } else {
+      db.collection(collection).findOne({'_id': new ObjectId(id)}, function(err, doc) {
+        if (err) {
+          callback(err, db);
+        } else {
+          var update = {$set: {}};
+          update['$set'][field] = value;
+          db.collection(collection).update({'_id': new ObjectId(id)}, update, function(err, count) {
+            if (err) {
+              callback(err, db);
+            } else {
+              callback(null, db);
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
 exports.accept = function(id, value, callback) {
   MongoClient.connect(mongoURI, function(err, db) {
     if (err) {

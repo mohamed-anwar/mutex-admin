@@ -30,6 +30,60 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/workshops', function(req, res) {
+  database.getList(function(err, db, list) {
+    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'Yes' && x.workshopMail != true);
+    list.map(doc => {
+      app.mailer.send('workshop', {
+        to: doc.email,
+        subject: 'Mutex workshop selection',
+        fullname: doc.fullname,
+        link: 'http://ieee-zsb.org/events/mutex/workshop?id=' + doc._id,
+      }, function(err, message) {
+        if (err) {
+          console.log(err);
+        } else {
+          database.updateDoc(doc._id, 'workshopMail', true, function(err, db) {
+            if (err) {
+              console.log(err);
+            }
+            if (db) db.close();
+          });
+        }
+      });
+    });
+    res.send('OK');
+    if (db) db.close();
+  });
+});
+
+router.get('/invite', function(req, res) {
+  database.getList(function(err, db, list) {
+    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'Yes' && x.workshopMail != true);
+    list.map(doc => {
+      app.mailer.send('workshop', {
+        to: doc.email,
+        subject: 'Mutex workshop selection',
+        fullname: doc.fullname,
+        link: 'http://ieee-zsb.org:50080/events/mutex/workshop?id=' + doc._id,
+      }, function(err, message) {
+        if (err) {
+          console.log(err);
+        } else {
+          database.updateDoc(doc._id, 'workshopMail', true, function(err, db) {
+            if (err) {
+              console.log(err);
+            }
+            if (db) db.close();
+          });
+        }
+      });
+    });
+    res.send('OK');
+    if (db) db.close();
+  });
+});
+
 router.get('/accepted', function(req, res) {
   database.getList(function(err, db, list) {
     list = list.filter(x => x.confirmed == true).filter(x => x.accepted == true);
@@ -65,6 +119,7 @@ router.get('/invitation', function(req, res) {
           qr: qr.imageSync(id, {type: 'svg'}),
           fullname: doc.fullname,
           email: doc.email,
+          base: 'file://' + global.pwd,
         }, function(err, str) {
           pdf.create(str, {
             format: 'A4',
