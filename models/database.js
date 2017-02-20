@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 
 var mongoURI = process.env.MONGO_URI;
-var collection = "testing";
+var collection = "master";
 
 exports.getList = function(callback) {
   MongoClient.connect(mongoURI, function(err, db) {
@@ -28,7 +28,7 @@ exports.getDoc = function(id, callback) {
   });
 };
 
-exports.updateDoc = function(id, field, value, callback) {
+exports.updateDoc = function(id, update, callback) {
   MongoClient.connect(mongoURI, function(err, db) {
     if (err) {
       callback(err, db);
@@ -37,8 +37,6 @@ exports.updateDoc = function(id, field, value, callback) {
         if (err) {
           callback(err, db);
         } else {
-          var update = {$set: {}};
-          update['$set'][field] = value;
           db.collection(collection).update({'_id': new ObjectId(id)}, update, function(err, count) {
             if (err) {
               callback(err, db);

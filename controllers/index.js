@@ -43,7 +43,7 @@ router.get('/workshops', function(req, res) {
         if (err) {
           console.log(err);
         } else {
-          database.updateDoc(doc._id, 'workshopMail', true, function(err, db) {
+          database.updateDoc(doc._id, {$set: {workshopMail: true}}, function(err, db) {
             if (err) {
               console.log(err);
             }
@@ -59,24 +59,38 @@ router.get('/workshops', function(req, res) {
 
 router.get('/invite', function(req, res) {
   database.getList(function(err, db, list) {
-    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'Yes' && x.workshopMail != true);
+    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'No' && x.invited != true);
     list.map(doc => {
-      app.mailer.send('workshop', {
-        to: doc.email,
-        subject: 'Mutex workshop selection',
+      ejs.renderFile(__dirname + '/../views/invitation.ejs', {
+        code: doc._id,
+        qr: qr.imageSync(doc._id.toString(), {type: 'svg'}),
         fullname: doc.fullname,
-        link: 'http://ieee-zsb.org:50080/events/mutex/workshop?id=' + doc._id,
-      }, function(err, message) {
-        if (err) {
-          console.log(err);
-        } else {
-          database.updateDoc(doc._id, 'workshopMail', true, function(err, db) {
+        email: doc.email,
+        base: 'file://' + global.pwd,
+      }, function(err, str) {
+        pdf.create(str, {
+          format: 'A4',
+          height: "42cm",
+          width: "29.7cm"
+        }).toBuffer(function(err, buffer) {
+          app.mailer.send('mail', {
+            to: doc.email,
+            subject: 'Mutex event invitation',
+            fullname: doc.fullname,
+            attachments: [{filename: "Mutex_Invitation.pdf", contents: buffer}]
+          }, function(err, message) {
             if (err) {
               console.log(err);
+            } else {
+              database.updateDoc(doc._id, {$set: {invited: true}}, function(err, db) {
+                if (err) {
+                  console.log(err);
+                }
+                if (db) db.close();
+              });
             }
-            if (db) db.close();
           });
-        }
+        });
       });
     });
     res.send('OK');
