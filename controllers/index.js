@@ -67,6 +67,7 @@ router.get('/invite', function(req, res) {
         fullname: doc.fullname,
         email: doc.email,
         base: 'file://' + global.pwd,
+        workshop: doc.acc != undefined && doc.acc !== false && doc.acc.toString().match(/0|1|2/)? ['AI', 'Cloud', 'IoT'][doc.acc] : 'N/A',
       }, function(err, str) {
         pdf.create(str, {
           format: 'A4',
