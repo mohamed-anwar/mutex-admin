@@ -120,7 +120,6 @@ router.get('/declined', function(req, res) {
 
 router.get('/invitation', function(req, res) {
   var id = req.query.id;
-
   if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
     res.status(404).send('ERR::INV_ID');
   } else {
@@ -134,6 +133,7 @@ router.get('/invitation', function(req, res) {
           fullname: doc.fullname,
           email: doc.email,
           base: 'file://' + global.pwd,
+          workshop: doc.acc != undefined && doc.acc !== false && doc.acc.toString().match(/0|1|2/)? ['AI', 'Cloud', 'IoT'][doc.acc] : 'N/A',
         }, function(err, str) {
           pdf.create(str, {
             format: 'A4',
