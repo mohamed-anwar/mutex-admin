@@ -73,7 +73,7 @@ router.get('/invite', function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.invited != true && x.acc === 2);
+      list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.invited != true && x.acc === 1);
       list.map(doc => {
         ejs.renderFile(__dirname + '/../views/invitation.ejs', {
           code: doc._id,
