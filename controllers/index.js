@@ -30,6 +30,17 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/work', function(req, res) {
+  database.getList(function(err, db, list) {
+    list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshop == 1 && x.acc === 1);
+    res.render('index', {
+      list: list,
+    });
+    db.close();
+  });
+});
+
+
 router.get('/workshops', function(req, res) {
   database.getList(function(err, db, list) {
     list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'Yes' && x.workshopMail != true);
@@ -62,7 +73,7 @@ router.get('/invite', function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshops == 'No' && x.invited != true);
+      list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.invited != true);
       list.map(doc => {
         ejs.renderFile(__dirname + '/../views/invitation.ejs', {
           code: doc._id,
@@ -78,7 +89,8 @@ router.get('/invite', function(req, res) {
             pdf.create(str, {
               format: 'A4',
               height: "42cm",
-              width: "29.7cm"
+              width: "29.7cm",
+              timeout: 120000,
             }).toBuffer(function(err, buffer) {
               if (err) {
                 console.log(err);
