@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 
 var mongoURI = process.env.MONGO_URI;
-var collection = "testing";
+var collection = "master";
 
 exports.getList = function(callback) {
   MongoClient.connect(mongoURI, function(err, db) {
