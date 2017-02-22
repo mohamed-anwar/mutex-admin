@@ -58,7 +58,7 @@ router.get('/workshops', function(req, res) {
 });
 
 router.get('/invite', function(req, res) {
-  database.getList(function(err, db, list) {
+  database.getList(function(err, db, list) {  /* Updated error checking */
     if (err) {
       console.log(err);
     } else {
