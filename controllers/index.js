@@ -142,6 +142,7 @@ router.get('/send', function(req, res) {
         });
       }
     });
+    res.send('OK');
   }
 });
 
