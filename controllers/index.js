@@ -99,6 +99,52 @@ router.get('/invite', function(req, res) {
   });
 });
 
+router.get('/send', function(req, res) {
+  var id = req.query.id;
+  if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+    res.status(404).send('ERR::INV_ID');
+  } else {
+    database.getDoc(id, function(err, db, doc) {
+      if (err) {
+        res.status(404).send('ERR::DB');
+      } else {
+        ejs.renderFile(__dirname + '/../views/invitation.ejs', {
+          code: id,
+          qr: qr.imageSync(id, {type: 'svg'}),
+          fullname: doc.fullname,
+          email: doc.email,
+          base: 'file://' + global.pwd,
+          workshop: doc.acc != undefined && doc.acc !== false && doc.acc.toString().match(/0|1|2/)? ['AI', 'Cloud', 'IoT'][doc.acc] : 'N/A',
+        }, function(err, str) {
+          pdf.create(str, {
+            format: 'A4',
+            height: "42cm",
+            width: "29.7cm"
+          }).toBuffer(function(err, buffer) {
+            app.mailer.send('mail', {
+              to: doc.email,
+              subject: 'Mutex event invitation',
+              fullname: doc.fullname,
+              attachments: [{filename: "Mutex_Invitation.pdf", contents: buffer}]
+            }, function(err, message) {
+              if (err) {
+                console.log(err);
+              } else {
+                database.updateDoc(doc._id, {$set: {invited: true}}, function(err, db) {
+                  if (err) {
+                    console.log(err);
+                  }
+                  if (db) db.close();
+                });
+              }
+            });
+          });
+        });
+      }
+    });
+  }
+});
+
 router.get('/accepted', function(req, res) {
   database.getList(function(err, db, list) {
     list = list.filter(x => x.confirmed == true).filter(x => x.accepted == true);
