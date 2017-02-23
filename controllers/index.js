@@ -30,6 +30,16 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/list', function(req, res) {
+  database.getList(function(err, db, list) {
+    list = list.filter(x => x.invited == true);
+    res.render('list', {
+      list: list,
+    });
+    db.close();
+  });
+});
+
 router.get('/work', function(req, res) {
   database.getList(function(err, db, list) {
     list = list.filter(x => x.confirmed == true && x.programmer == undefined && x.accepted == true && x.workshop == 1 && x.acc === 1);
