@@ -5,6 +5,7 @@ const ejs = require('ejs');
 const pdf = require('html-pdf');
 var app = global.app;
 var io = global.io;
+var hostURL = process.env.HOST_URL;
 
 io.on('connection', function(socket) {
   console.log('User connected');
@@ -59,7 +60,7 @@ router.get('/workshops', function(req, res) {
         to: doc.email,
         subject: 'Mutex workshop selection',
         fullname: doc.fullname,
-        link: 'http://ieee-zsb.org/events/mutex/workshop?id=' + doc._id,
+        link: hostURL + '/workshop?id=' + doc._id,
       }, function(err, message) {
         if (err) {
           console.log(err);
